@@ -76,7 +76,7 @@
   }
   
   .fire-glow {
-    filter: drop-shadow(0 0 0.5rem theme('colors.roast.medium'));
+    filter: drop-shadow(0 0 0.5rem theme('colors.primary'));
   }
   
   .text-gradient {

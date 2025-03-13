@@ -29,20 +29,20 @@ const RoastResult: React.FC<RoastResultProps> = ({
   }, [roast]);
 
   return (
-    <div className="w-full max-w-md mx-auto animate-fade-in">
+    <div className="w-full max-w-full mx-auto animate-fade-in">
       <div className="roast-card p-6 mb-6">
         <div className="flex items-center justify-center mb-4">
           <h2 className="text-xl font-bold">THE VERDICT</h2>
         </div>
         
         {imageUrl && (
-          <div className="relative mb-6 rounded-xl overflow-hidden border-2 border-roast-medium">
+          <div className="relative mb-6 rounded-xl overflow-hidden border-2 border-[#FF5722] max-w-lg mx-auto">
             <img 
               src={imageUrl} 
               alt="Roasted selfie" 
               className="w-full object-cover"
             />
-            <div className="absolute bottom-4 right-4 flex items-center px-3 py-1.5 bg-roast-medium rounded-full">
+            <div className="absolute bottom-4 right-4 flex items-center px-3 py-1.5 bg-[#FF5722] rounded-full">
               <Flame className="h-5 w-5 mr-1.5 fire-glow" />
               <span className="font-bold">ROASTED</span>
             </div>
@@ -55,9 +55,9 @@ const RoastResult: React.FC<RoastResultProps> = ({
             className="italic text-lg mb-4 opacity-0 transition-opacity duration-1000"
             style={{ textShadow: '0 0 20px rgba(255,255,255,0.1)' }}
           >
-            <span className="text-3xl text-roast-light">"</span>
+            <span className="text-3xl text-[#FF7A50]">"</span>
             {roast}
-            <span className="text-3xl text-roast-light">"</span>
+            <span className="text-3xl text-[#FF7A50]">"</span>
           </div>
         </div>
         
@@ -65,7 +65,7 @@ const RoastResult: React.FC<RoastResultProps> = ({
         
         <div className="mt-6 pt-4 border-t border-white/10">
           <h3 className="text-xl font-bold mb-3 text-center">FINAL BURN</h3>
-          <div className="p-4 bg-gradient-to-r from-roast-light to-roast-dark rounded-xl text-center text-white font-medium">
+          <div className="p-4 bg-gradient-to-r from-[#FF7A50] to-[#E64A19] rounded-xl text-center text-white font-medium">
             {finalBurn}
           </div>
         </div>
@@ -75,10 +75,10 @@ const RoastResult: React.FC<RoastResultProps> = ({
       
       <Button
         onClick={onRoastAgain}
-        className="button-gradient flex items-center gap-2 px-6 py-6 rounded-full text-lg font-medium w-full"
+        className="button-gradient flex items-center gap-2 px-6 py-6 rounded-full text-lg font-medium w-full max-w-lg mx-auto"
       >
         <RefreshCw size={20} className="mr-2" />
-        TAKE ANOTHER SELFIE
+        TRY ANOTHER ROAST
       </Button>
       
       <p className="text-center text-white/60 text-xs mt-4">

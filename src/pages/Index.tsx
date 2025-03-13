@@ -91,92 +91,46 @@ const Index = () => {
       {/* App Header */}
       <header className="w-full py-6 px-4 flex justify-center">
         <div className="flex items-center">
-          <Flame className="h-8 w-8 mr-2 text-roast-medium animate-pulse-fire" />
+          <Flame className="h-8 w-8 mr-2 text-[#FF7A50] animate-pulse-fire" />
           <h1 className="text-3xl font-bold text-gradient">RoastGPT</h1>
         </div>
       </header>
       
-      <div className="w-full max-w-md mx-auto px-4">
-        {/* Phone Mockup */}
-        <div className="phone-mockup bg-background">
-          <div className="h-full overflow-y-auto pb-20">
-            {roastResult ? (
-              <RoastResult
-                imageUrl={imageUrl || undefined}
-                roast={roastResult.roast}
-                finalBurn={roastResult.finalBurn}
-                ratings={roastResult.ratings}
-                onRoastAgain={handleRoastAgain}
-              />
-            ) : (
-              <>
-                {/* Main Tabs */}
-                <Tabs 
-                  defaultValue="selfie" 
-                  value={activeTab}
-                  onValueChange={setActiveTab}
-                  className="w-full"
-                >
-                  <TabsList className="grid grid-cols-2 mb-6">
-                    <TabsTrigger value="selfie" className="data-[state=active]:bg-roast-medium">
-                      <Camera className="h-4 w-4 mr-2" />
-                      Selfie Roast
-                    </TabsTrigger>
-                    <TabsTrigger value="text" className="data-[state=active]:bg-roast-medium">
-                      <MessageSquare className="h-4 w-4 mr-2" />
-                      Text Roast
-                    </TabsTrigger>
-                  </TabsList>
+      <div className="w-full max-w-2xl mx-auto px-4">
+        {roastResult ? (
+          <RoastResult
+            imageUrl={imageUrl || undefined}
+            roast={roastResult.roast}
+            finalBurn={roastResult.finalBurn}
+            ratings={roastResult.ratings}
+            onRoastAgain={handleRoastAgain}
+          />
+        ) : (
+          <>
+            {/* Main Tabs */}
+            <Tabs 
+              defaultValue="selfie" 
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="w-full"
+            >
+              <TabsList className="grid grid-cols-2 mb-6">
+                <TabsTrigger value="selfie" className="data-[state=active]:bg-[#FF5722]">
+                  <Camera className="h-4 w-4 mr-2" />
+                  Selfie Roast
+                </TabsTrigger>
+                <TabsTrigger value="text" className="data-[state=active]:bg-[#FF5722]">
+                  <MessageSquare className="h-4 w-4 mr-2" />
+                  Text Roast
+                </TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="selfie" className="mt-0">
+                <div className="space-y-6">
+                  <UploadSelfie onImageSelected={handleImageSelected} />
                   
-                  <TabsContent value="selfie" className="mt-0">
-                    <div className="space-y-6">
-                      <UploadSelfie onImageSelected={handleImageSelected} />
-                      
-                      {imageUrl && (
-                        <>
-                          <RoastIntensity 
-                            value={roastIntensity} 
-                            onChange={setRoastIntensity} 
-                          />
-                          
-                          <PersonaSelector 
-                            value={aiPersona} 
-                            onChange={setAiPersona} 
-                          />
-                          
-                          <Button
-                            onClick={handleRoastSelfie}
-                            disabled={isGenerating}
-                            className="button-gradient flex items-center gap-2 px-6 py-6 rounded-full text-lg font-medium w-full"
-                          >
-                            {isGenerating ? (
-                              <>
-                                <div className="w-5 h-5 border-2 border-white/10 border-t-white rounded-full animate-spin mr-2" />
-                                Roasting...
-                              </>
-                            ) : (
-                              <>
-                                <Flame size={20} className="mr-2" />
-                                Roast My Selfie
-                              </>
-                            )}
-                          </Button>
-                        </>
-                      )}
-                    </div>
-                  </TabsContent>
-                  
-                  <TabsContent value="text" className="mt-0">
-                    <div className="space-y-6">
-                      <div className="w-full">
-                        <Textarea
-                          placeholder="Enter a bio, tweet, or message to get roasted..."
-                          value={textInput}
-                          onChange={(e) => setTextInput(e.target.value)}
-                          className="min-h-[150px] bg-secondary border-white/10 focus:border-roast-light resize-none"
-                        />
-                      </div>
-                      
+                  {imageUrl && (
+                    <>
                       <RoastIntensity 
                         value={roastIntensity} 
                         onChange={setRoastIntensity} 
@@ -188,8 +142,8 @@ const Index = () => {
                       />
                       
                       <Button
-                        onClick={handleRoastText}
-                        disabled={isGenerating || !textInput.trim()}
+                        onClick={handleRoastSelfie}
+                        disabled={isGenerating}
                         className="button-gradient flex items-center gap-2 px-6 py-6 rounded-full text-lg font-medium w-full"
                       >
                         {isGenerating ? (
@@ -200,53 +154,94 @@ const Index = () => {
                         ) : (
                           <>
                             <Flame size={20} className="mr-2" />
-                            Roast My Text
+                            Roast My Selfie
                           </>
                         )}
                       </Button>
-                    </div>
-                  </TabsContent>
-                </Tabs>
-                
-                {/* Stats Section */}
-                <div className="mt-12 flex justify-center space-x-8">
-                  <div className="text-center">
-                    <p className="text-roast-light text-xl font-bold">9.8K</p>
-                    <p className="text-white/60 text-sm">Roasts Today</p>
+                    </>
+                  )}
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="text" className="mt-0">
+                <div className="space-y-6">
+                  <div className="w-full">
+                    <Textarea
+                      placeholder="Enter a bio, tweet, or message to get roasted..."
+                      value={textInput}
+                      onChange={(e) => setTextInput(e.target.value)}
+                      className="min-h-[150px] bg-secondary border-white/10 focus:border-[#FF7A50] resize-none"
+                    />
                   </div>
                   
-                  <div className="text-center">
-                    <p className="text-roast-light text-xl font-bold">142K</p>
-                    <p className="text-white/60 text-sm">Egos Crushed</p>
-                  </div>
+                  <RoastIntensity 
+                    value={roastIntensity} 
+                    onChange={setRoastIntensity} 
+                  />
+                  
+                  <PersonaSelector 
+                    value={aiPersona} 
+                    onChange={setAiPersona} 
+                  />
+                  
+                  <Button
+                    onClick={handleRoastText}
+                    disabled={isGenerating || !textInput.trim()}
+                    className="button-gradient flex items-center gap-2 px-6 py-6 rounded-full text-lg font-medium w-full"
+                  >
+                    {isGenerating ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white/10 border-t-white rounded-full animate-spin mr-2" />
+                        Roasting...
+                      </>
+                    ) : (
+                      <>
+                        <Flame size={20} className="mr-2" />
+                        Roast My Text
+                      </>
+                    )}
+                  </Button>
                 </div>
-                
-                {/* Disclaimer */}
-                <div className="mt-8 text-center text-white/60 text-xs px-4">
-                  <p className="mb-1 flex items-center justify-center">
-                    <Flame size={12} className="mr-1 text-roast-light" />
-                    Warning: Our AI has no filter and will absolutely destroy you
-                  </p>
-                  <p>By continuing, you agree to be absolutely decimated</p>
-                </div>
-                
-                <div className="mt-6 text-center text-white/40 text-xs">
-                  Powered by Pollinations.AI
-                </div>
-              </>
-            )}
-          </div>
-        </div>
+              </TabsContent>
+            </Tabs>
+            
+            {/* Stats Section */}
+            <div className="mt-12 flex justify-center space-x-8">
+              <div className="text-center">
+                <p className="text-[#FF7A50] text-xl font-bold">9.8K</p>
+                <p className="text-white/60 text-sm">Roasts Today</p>
+              </div>
+              
+              <div className="text-center">
+                <p className="text-[#FF7A50] text-xl font-bold">142K</p>
+                <p className="text-white/60 text-sm">Egos Crushed</p>
+              </div>
+            </div>
+            
+            {/* Disclaimer */}
+            <div className="mt-8 text-center text-white/60 text-xs px-4">
+              <p className="mb-1 flex items-center justify-center">
+                <Flame size={12} className="mr-1 text-[#FF7A50]" />
+                Warning: Our AI has no filter and will absolutely destroy you
+              </p>
+              <p>By continuing, you agree to be absolutely decimated</p>
+            </div>
+            
+            <div className="mt-6 text-center text-white/40 text-xs">
+              Powered by Pollinations.AI
+            </div>
+          </>
+        )}
       </div>
       
       {/* App Features Description */}
-      <div className="w-full max-w-4xl mx-auto mt-12 px-4">
+      <div className="w-full max-w-5xl mx-auto mt-12 px-4">
         <h2 className="text-2xl font-bold mb-6 text-center text-gradient">The Ultimate AI Roast Master</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="roast-card p-6">
             <div className="mb-4 flex justify-center">
-              <Camera className="h-8 w-8 text-roast-light" />
+              <Camera className="h-8 w-8 text-[#FF7A50]" />
             </div>
             <h3 className="text-lg font-medium mb-2 text-center">Selfie Roast</h3>
             <p className="text-white/70 text-center">
@@ -256,7 +251,7 @@ const Index = () => {
           
           <div className="roast-card p-6">
             <div className="mb-4 flex justify-center">
-              <MessageSquare className="h-8 w-8 text-roast-light" />
+              <MessageSquare className="h-8 w-8 text-[#FF7A50]" />
             </div>
             <h3 className="text-lg font-medium mb-2 text-center">Text Roast</h3>
             <p className="text-white/70 text-center">
@@ -266,7 +261,7 @@ const Index = () => {
           
           <div className="roast-card p-6">
             <div className="mb-4 flex justify-center">
-              <Share2 className="h-8 w-8 text-roast-light" />
+              <Share2 className="h-8 w-8 text-[#FF7A50]" />
             </div>
             <h3 className="text-lg font-medium mb-2 text-center">Share & Battle</h3>
             <p className="text-white/70 text-center">

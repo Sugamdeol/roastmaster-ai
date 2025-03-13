@@ -88,9 +88,4 @@
            hover:from-[#FF5722] hover:to-[#E64A19]
            transition-all duration-300;
   }
-  
-  .phone-mockup {
-    @apply relative mx-auto border-[14px] border-[#222] rounded-[2.5rem] 
-           h-[600px] w-[300px] max-w-full shadow-xl overflow-hidden;
-  }
 }

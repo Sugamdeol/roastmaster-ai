@@ -19,7 +19,7 @@ const NotFound = () => {
       <div className="roast-card p-8 max-w-md w-full animate-fade-in">
         <div className="flex flex-col items-center text-center">
           <div className="bg-white/10 p-3 rounded-full mb-6">
-            <AlertTriangle className="h-10 w-10 text-roast-light" />
+            <AlertTriangle className="h-10 w-10 text-[#FF5722]" />
           </div>
           
           <h1 className="text-4xl font-bold mb-2 text-gradient">404</h1>

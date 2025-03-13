@@ -10,7 +10,7 @@ export const generateImageRoast = async (
   base64Image: string,
   intensity: 'light' | 'medium' | 'dark' = 'medium',
   persona: string = 'Savage Comedian'
-): Promise<{ roast: string; ratings: Record<string, number> }> => {
+): Promise<{ roast: string; finalBurn: string; ratings: Record<string, number> }> => {
   try {
     // Prepare the request body for image analysis
     const analysisRequestBody = {
@@ -138,7 +138,7 @@ export const generateTextRoast = async (
   text: string,
   intensity: 'light' | 'medium' | 'dark' = 'medium',
   persona: string = 'Savage Comedian'
-): Promise<{ roast: string; ratings: Record<string, number> }> => {
+): Promise<{ roast: string; finalBurn: string; ratings: Record<string, number> }> => {
   try {
     const intensityDescriptions = {
       light: "Be playful and funny while roasting. Keep it light and humorous with witty observations.",

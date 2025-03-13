@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Flame, Camera, MessageSquare, Share2 } from "lucide-react";
@@ -11,6 +10,12 @@ import RoastIntensity from '@/components/RoastIntensity';
 import PersonaSelector from '@/components/PersonaSelector';
 import { dataURLToBase64 } from '@/utils/imageUtils';
 import { generateImageRoast, generateTextRoast } from '@/utils/apiService';
+import { 
+  getRoastCount, 
+  getEgoCrushedCount, 
+  incrementRoastCount, 
+  incrementEgoCrushedCount 
+} from '@/utils/counterUtils';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("selfie");
@@ -24,9 +29,24 @@ const Index = () => {
     finalBurn: string;
     ratings: Record<string, number>;
   } | null>(null);
+  const [roastCount, setRoastCount] = useState(0);
+  const [egoCrushedCount, setEgoCrushedCount] = useState(0);
+
+  useEffect(() => {
+    setRoastCount(getRoastCount());
+    setEgoCrushedCount(getEgoCrushedCount());
+  }, []);
 
   const handleImageSelected = (base64Image: string) => {
     setImageUrl(base64Image);
+  };
+
+  const updateCounters = () => {
+    const newRoastCount = incrementRoastCount();
+    const newEgoCrushedCount = incrementEgoCrushedCount();
+    
+    setRoastCount(newRoastCount);
+    setEgoCrushedCount(newEgoCrushedCount);
   };
 
   const handleRoastSelfie = async () => {
@@ -46,6 +66,7 @@ const Index = () => {
       );
       
       setRoastResult(result);
+      updateCounters();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
       console.error('Error generating roast:', error);
@@ -71,6 +92,7 @@ const Index = () => {
       );
       
       setRoastResult(result);
+      updateCounters();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
       console.error('Error generating roast:', error);
@@ -88,10 +110,9 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-background text-foreground pb-20">
-      {/* App Header */}
       <header className="w-full py-6 px-4 flex justify-center">
         <div className="flex items-center">
-          <Flame className="h-8 w-8 mr-2 text-[#FF7A50] animate-pulse-fire" />
+          <Flame className="h-8 w-8 mr-2 text-[#FF7A50] animate-pulse" />
           <h1 className="text-3xl font-bold text-gradient">RoastGPT</h1>
         </div>
       </header>
@@ -107,7 +128,6 @@ const Index = () => {
           />
         ) : (
           <>
-            {/* Main Tabs */}
             <Tabs 
               defaultValue="selfie" 
               value={activeTab}
@@ -205,20 +225,18 @@ const Index = () => {
               </TabsContent>
             </Tabs>
             
-            {/* Stats Section */}
             <div className="mt-12 flex justify-center space-x-8">
               <div className="text-center">
-                <p className="text-[#FF7A50] text-xl font-bold">9.8K</p>
+                <p className="text-[#FF7A50] text-xl font-bold">{roastCount.toLocaleString()}</p>
                 <p className="text-white/60 text-sm">Roasts Today</p>
               </div>
               
               <div className="text-center">
-                <p className="text-[#FF7A50] text-xl font-bold">142K</p>
+                <p className="text-[#FF7A50] text-xl font-bold">{egoCrushedCount.toLocaleString()}</p>
                 <p className="text-white/60 text-sm">Egos Crushed</p>
               </div>
             </div>
             
-            {/* Disclaimer */}
             <div className="mt-8 text-center text-white/60 text-xs px-4">
               <p className="mb-1 flex items-center justify-center">
                 <Flame size={12} className="mr-1 text-[#FF7A50]" />
@@ -234,7 +252,6 @@ const Index = () => {
         )}
       </div>
       
-      {/* App Features Description */}
       <div className="w-full max-w-5xl mx-auto mt-12 px-4">
         <h2 className="text-2xl font-bold mb-6 text-center text-gradient">The Ultimate AI Roast Master</h2>
         

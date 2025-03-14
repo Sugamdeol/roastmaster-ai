@@ -1,14 +1,14 @@
-
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Flame, Camera, MessageSquare, Share2, Volume2 } from "lucide-react";
+import { Flame, Camera, MessageSquare, Share2, Volume2, Swords } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from 'sonner';
 import UploadSelfie from '@/components/UploadSelfie';
 import RoastResult from '@/components/RoastResult';
 import RoastIntensity from '@/components/RoastIntensity';
 import PersonaSelector from '@/components/PersonaSelector';
+import RoastBattle from '@/components/RoastBattle';
 import { dataURLToBase64 } from '@/utils/imageUtils';
 import { generateImageRoast, generateTextRoast } from '@/utils/apiService';
 import { 
@@ -136,7 +136,7 @@ const Index = () => {
               onValueChange={setActiveTab}
               className="w-full"
             >
-              <TabsList className="grid grid-cols-2 mb-6">
+              <TabsList className="grid grid-cols-3 mb-6">
                 <TabsTrigger value="selfie" className="data-[state=active]:bg-[#FF5722]">
                   <Camera className="h-4 w-4 mr-2" />
                   Selfie Roast
@@ -144,6 +144,10 @@ const Index = () => {
                 <TabsTrigger value="text" className="data-[state=active]:bg-[#FF5722]">
                   <MessageSquare className="h-4 w-4 mr-2" />
                   Text Roast
+                </TabsTrigger>
+                <TabsTrigger value="battle" className="data-[state=active]:bg-[#FF5722]">
+                  <Swords className="h-4 w-4 mr-2" />
+                  Roast Battle
                 </TabsTrigger>
               </TabsList>
               
@@ -225,6 +229,10 @@ const Index = () => {
                   </Button>
                 </div>
               </TabsContent>
+              
+              <TabsContent value="battle" className="mt-0">
+                <RoastBattle />
+              </TabsContent>
             </Tabs>
             
             <div className="mt-12 flex justify-center space-x-8">
@@ -285,11 +293,11 @@ const Index = () => {
           
           <div className="roast-card p-6">
             <div className="mb-4 flex justify-center">
-              <Volume2 className="h-8 w-8 text-[#FF7A50]" />
+              <Swords className="h-8 w-8 text-[#FF7A50]" />
             </div>
-            <h3 className="text-lg font-medium mb-2 text-center">Audio Roast</h3>
+            <h3 className="text-lg font-medium mb-2 text-center">Roast Battle</h3>
             <p className="text-white/70 text-center">
-              Listen to your roast read aloud by an AI voice that adds that extra burn to the insults.
+              Go head-to-head with the AI in a never-ending roast battle until you decide to stop.
             </p>
           </div>
         </div>

@@ -1,12 +1,10 @@
-
 /**
- * Service for generating audio roasts using OpenAI's TTS API
+ * Service for generating audio roasts using OpenAI's TTS API through Pollinations
  */
 
 import { toast } from 'sonner';
 
-// OpenAI TTS API endpoint
-const TTS_API_URL = 'https://api.openai.com/v1/audio/speech';
+// Pollinations Streaming API endpoint
 const STREAMING_API_URL = 'https://text.pollinations.ai/openai/v1/chat/completions';
 
 // Available voices for roasting
@@ -25,57 +23,10 @@ export type RoastVoice = keyof typeof ROAST_VOICES;
 // Default voice
 export const DEFAULT_VOICE: RoastVoice = 'nova';
 
-// Generate audio for a roast (non-streaming method)
-export const generateRoastAudio = async (
-  roastText: string, 
-  voice: RoastVoice = DEFAULT_VOICE,
-  apiKey: string
-): Promise<string> => {
-  try {
-    // Check if text is too long (OpenAI has a 4096 token limit)
-    if (roastText.length > 4000) {
-      roastText = roastText.substring(0, 4000);
-    }
-    
-    // Make the API call to OpenAI's TTS endpoint
-    const response = await fetch(TTS_API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
-      },
-      body: JSON.stringify({
-        model: 'tts-1',
-        input: roastText,
-        voice: voice,
-        response_format: 'mp3'
-      })
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error?.message || 'Failed to generate audio');
-    }
-
-    // Convert the audio response to a blob
-    const audioData = await response.blob();
-    
-    // Create a URL for the blob
-    const audioUrl = URL.createObjectURL(audioData);
-    
-    return audioUrl;
-  } catch (error) {
-    console.error('Error generating audio roast:', error);
-    toast.error('Failed to generate audio roast');
-    throw error;
-  }
-};
-
 // Stream audio for a roast
 export const streamRoastAudio = async (
   roastText: string,
   voice: RoastVoice = DEFAULT_VOICE,
-  apiKey: string,
   onTextUpdate: (text: string) => void,
   onAudioChunk: (audioData: Uint8Array) => void
 ): Promise<void> => {
@@ -102,7 +53,6 @@ export const streamRoastAudio = async (
     const response = await fetch(STREAMING_API_URL, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${apiKey}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify(requestBody)
@@ -186,16 +136,6 @@ export const streamRoastAudio = async (
     toast.error('Failed to stream audio roast');
     throw error;
   }
-};
-
-// Play audio from URL
-export const playAudio = (audioUrl: string): HTMLAudioElement => {
-  const audio = new Audio(audioUrl);
-  audio.play().catch(error => {
-    console.error('Error playing audio:', error);
-    toast.error('Failed to play audio');
-  });
-  return audio;
 };
 
 // PCM16 Audio Context Manager

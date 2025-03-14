@@ -71,7 +71,7 @@ export const generateImageRoast = async (
           content: `Based on this selfie analysis, create a hilarious roast: ${analysisResult}`
         }
       ],
-      model: "openai",
+      model: "llama-vision",
       code: "beesknees",
       jsonMode: true
     };
@@ -161,7 +161,7 @@ export const generateTextRoast = async (
           content: `Roast me based on this text: ${text}`
         }
       ],
-      model: "openai",
+      model: "llama-vision",
       code: "beesknees",
       jsonMode: true
     };

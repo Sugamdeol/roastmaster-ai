@@ -5,6 +5,7 @@
 
 const ROAST_COUNT_KEY = 'roastgpt-roast-count';
 const EGO_CRUSHED_KEY = 'roastgpt-ego-crushed';
+const AUDIO_ROAST_KEY = 'roastgpt-audio-roast-count';
 
 // Initialize counter from localStorage or set default value
 export const getCounter = (key: string, defaultValue: number = 0): number => {
@@ -56,4 +57,14 @@ export const incrementEgoCrushedCount = (): number => {
   // Randomize the increment between 1-3 to make it more dynamic
   const increment = Math.floor(Math.random() * 3) + 1;
   return incrementCounter(EGO_CRUSHED_KEY, increment);
+};
+
+// Get audio roast count
+export const getAudioRoastCount = (): number => {
+  return getCounter(AUDIO_ROAST_KEY);
+};
+
+// Increment audio roast count
+export const incrementAudioRoastCount = (): number => {
+  return incrementCounter(AUDIO_ROAST_KEY);
 };

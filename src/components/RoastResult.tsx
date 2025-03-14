@@ -1,9 +1,11 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Flame, RefreshCw } from "lucide-react";
 import RatingMeter from './RatingMeter';
 import ShareOptions from './ShareOptions';
+import AudioRoastPlayer from './AudioRoastPlayer';
+import ApiKeyInput from './ApiKeyInput';
 
 interface RoastResultProps {
   imageUrl?: string;
@@ -16,6 +18,8 @@ interface RoastResultProps {
 const RoastResult: React.FC<RoastResultProps> = ({ 
   imageUrl, roast, finalBurn, ratings, onRoastAgain 
 }) => {
+  const [apiKey, setApiKey] = useState<string>('');
+  
   // Animated entry for text
   useEffect(() => {
     const animateText = () => {
@@ -69,6 +73,11 @@ const RoastResult: React.FC<RoastResultProps> = ({
             {finalBurn}
           </div>
         </div>
+      </div>
+      
+      <div className="space-y-6 mb-6">
+        <ApiKeyInput onApiKeyChange={setApiKey} />
+        <AudioRoastPlayer roastText={roast} finalBurn={finalBurn} apiKey={apiKey} />
       </div>
       
       <ShareOptions imageUrl={imageUrl} roastText={`${roast}\n\nFINAL BURN: ${finalBurn}`} />

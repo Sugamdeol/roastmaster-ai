@@ -1,7 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Flame, Camera, MessageSquare, Share2 } from "lucide-react";
+import { Flame, Camera, MessageSquare, Share2, Volume2 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from 'sonner';
 import UploadSelfie from '@/components/UploadSelfie';
@@ -12,7 +13,8 @@ import { dataURLToBase64 } from '@/utils/imageUtils';
 import { generateImageRoast, generateTextRoast } from '@/utils/apiService';
 import { 
   getRoastCount, 
-  getEgoCrushedCount, 
+  getEgoCrushedCount,
+  getAudioRoastCount,
   incrementRoastCount, 
   incrementEgoCrushedCount 
 } from '@/utils/counterUtils';
@@ -235,6 +237,11 @@ const Index = () => {
                 <p className="text-[#FF7A50] text-xl font-bold">{egoCrushedCount.toLocaleString()}</p>
                 <p className="text-white/60 text-sm">Egos Crushed</p>
               </div>
+              
+              <div className="text-center">
+                <p className="text-[#FF7A50] text-xl font-bold">{getAudioRoastCount().toLocaleString()}</p>
+                <p className="text-white/60 text-sm">Audio Roasts</p>
+              </div>
             </div>
             
             <div className="mt-8 text-center text-white/60 text-xs px-4">
@@ -278,11 +285,11 @@ const Index = () => {
           
           <div className="roast-card p-6">
             <div className="mb-4 flex justify-center">
-              <Share2 className="h-8 w-8 text-[#FF7A50]" />
+              <Volume2 className="h-8 w-8 text-[#FF7A50]" />
             </div>
-            <h3 className="text-lg font-medium mb-2 text-center">Share & Battle</h3>
+            <h3 className="text-lg font-medium mb-2 text-center">Audio Roast</h3>
             <p className="text-white/70 text-center">
-              Share your roast with friends or challenge them to see who gets roasted harder.
+              Listen to your roast read aloud by an AI voice that adds that extra burn to the insults.
             </p>
           </div>
         </div>

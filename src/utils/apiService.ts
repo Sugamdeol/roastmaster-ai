@@ -37,7 +37,7 @@ export const generateImageRoast = async (
     };
 
     // First request: Analyze the image
-    const analysisResponse = await fetch('https://text.pollinations.ai/', {
+    const analysisResponse = await fetch('https://text.pollinations.ai/openai', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(analysisRequestBody)
@@ -77,7 +77,7 @@ export const generateImageRoast = async (
     };
 
     // Make the roast request
-    const roastResponse = await fetch('https://text.pollinations.ai/', {
+    const roastResponse = await fetch('https://text.pollinations.ai/openai', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(roastRequestBody)

@@ -31,7 +31,7 @@ export const generateImageRoast = async (
           ]
         }
       ],
-      model: "openai",
+      model: "llama-vision",
       code: "beesknees",
       jsonMode: false
     };

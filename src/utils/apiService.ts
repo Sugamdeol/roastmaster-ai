@@ -31,7 +31,7 @@ export const generateImageRoast = async (
           ]
         }
       ],
-      model: "llama-vision",
+      model: "pixtral",
       code: "beesknees",
       jsonMode: false
     };
@@ -71,7 +71,7 @@ export const generateImageRoast = async (
           content: `Based on this selfie analysis, create a hilarious roast: ${analysisResult}`
         }
       ],
-      model: "llama-vision",
+      model: "pixtral",
       code: "beesknees",
       jsonMode: true
     };
@@ -161,7 +161,7 @@ export const generateTextRoast = async (
           content: `Roast me based on this text: ${text}`
         }
       ],
-      model: "llama-vision",
+      model: "pixtral",
       code: "beesknees",
       jsonMode: true
     };

@@ -75,7 +75,7 @@ export const streamRoastAudio = async (
   model: string = "mistral" // Using mistral model
 ): Promise<void> => {
   try {
-    const endpoint = 'https://audio.pollinations.ai/tts/live';
+    const endpoint = 'https://audio.pollinations.ai/openai';
     
     const requestBody = {
       message: {

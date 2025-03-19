@@ -4,6 +4,7 @@ import UploadSelfie from '@/components/UploadSelfie';
 import RoastIntensity from '@/components/RoastIntensity';
 import PersonaSelector from '@/components/PersonaSelector';
 import RoastControls from '@/components/RoastControls';
+import LanguageSelector, { SupportedLanguage } from '@/components/LanguageSelector';
 
 interface SelfieTabProps {
   imageUrl: string | null;
@@ -14,6 +15,8 @@ interface SelfieTabProps {
   setAiPersona: (persona: string) => void;
   isGenerating: boolean;
   handleRoastSelfie: () => void;
+  selectedLanguage: SupportedLanguage;
+  setSelectedLanguage: (language: SupportedLanguage) => void;
 }
 
 const SelfieTab: React.FC<SelfieTabProps> = ({
@@ -24,7 +27,9 @@ const SelfieTab: React.FC<SelfieTabProps> = ({
   aiPersona,
   setAiPersona,
   isGenerating,
-  handleRoastSelfie
+  handleRoastSelfie,
+  selectedLanguage,
+  setSelectedLanguage
 }) => {
   return (
     <div className="space-y-6">
@@ -40,6 +45,11 @@ const SelfieTab: React.FC<SelfieTabProps> = ({
           <PersonaSelector 
             value={aiPersona} 
             onChange={setAiPersona} 
+          />
+          
+          <LanguageSelector
+            value={selectedLanguage}
+            onChange={setSelectedLanguage}
           />
           
           <RoastControls

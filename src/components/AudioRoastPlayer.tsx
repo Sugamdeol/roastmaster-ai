@@ -12,15 +12,18 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { toast } from 'sonner';
 import { incrementAudioRoastCount } from '@/utils/counterUtils';
+import { SupportedLanguage } from './LanguageSelector';
 
 interface AudioRoastPlayerProps {
   roastText: string;
   finalBurn: string;
+  language?: SupportedLanguage;
 }
 
 const AudioRoastPlayer: React.FC<AudioRoastPlayerProps> = ({ 
   roastText, 
-  finalBurn
+  finalBurn,
+  language = 'en'
 }) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -112,7 +115,7 @@ const AudioRoastPlayer: React.FC<AudioRoastPlayerProps> = ({
   return (
     <div className="roast-card p-4 space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-medium">Audio Roast</h3>
+        <h3 className="text-lg font-medium">Audio Roast ({language.toUpperCase()})</h3>
         
         <Select 
           value={selectedVoice} 

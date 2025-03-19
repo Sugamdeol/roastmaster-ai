@@ -4,6 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import RoastIntensity from '@/components/RoastIntensity';
 import PersonaSelector from '@/components/PersonaSelector';
 import RoastControls from '@/components/RoastControls';
+import LanguageSelector, { SupportedLanguage } from '@/components/LanguageSelector';
 
 interface TextTabProps {
   textInput: string;
@@ -14,6 +15,8 @@ interface TextTabProps {
   setAiPersona: (persona: string) => void;
   isGenerating: boolean;
   handleRoastText: () => void;
+  selectedLanguage: SupportedLanguage;
+  setSelectedLanguage: (language: SupportedLanguage) => void;
 }
 
 const TextTab: React.FC<TextTabProps> = ({
@@ -24,7 +27,9 @@ const TextTab: React.FC<TextTabProps> = ({
   aiPersona,
   setAiPersona,
   isGenerating,
-  handleRoastText
+  handleRoastText,
+  selectedLanguage,
+  setSelectedLanguage
 }) => {
   return (
     <div className="space-y-6">
@@ -45,6 +50,11 @@ const TextTab: React.FC<TextTabProps> = ({
       <PersonaSelector 
         value={aiPersona} 
         onChange={setAiPersona} 
+      />
+      
+      <LanguageSelector
+        value={selectedLanguage}
+        onChange={setSelectedLanguage}
       />
       
       <RoastControls

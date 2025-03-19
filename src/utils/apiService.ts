@@ -1,7 +1,8 @@
-
 /**
  * API Service for Pollinations AI API
  */
+
+import { SupportedLanguage } from '@/components/LanguageSelector';
 
 /**
  * Generates a roast based on an image
@@ -9,7 +10,8 @@
 export const generateImageRoast = async (
   base64Image: string,
   intensity: 'light' | 'medium' | 'dark' = 'medium',
-  persona: string = 'Savage Comedian'
+  persona: string = 'Savage Comedian',
+  language: SupportedLanguage = 'en'
 ): Promise<{ roast: string; finalBurn: string; ratings: Record<string, number> }> => {
   try {
     // Prepare the request body for image analysis
@@ -64,7 +66,8 @@ export const generateImageRoast = async (
                    Create a humorous, exaggerated roast with witty observations about the person's selfie.
                    Include a funny one-liner at the end as a "FINAL BURN". Also generate ratings on a scale of 5-30% 
                    for the following categories: Creativity, Confidence, Style, Mystery, and Self-Awareness.
-                   Format your response as JSON with 'roast', 'finalBurn', and 'ratings' fields.`
+                   Format your response as JSON with 'roast', 'finalBurn', and 'ratings' fields.
+                   IMPORTANT: Write the entire roast in ${language !== 'en' ? SUPPORTED_LANGUAGES[language] : 'English'}.`
         },
         {
           role: "user",
@@ -137,7 +140,8 @@ export const generateImageRoast = async (
 export const generateTextRoast = async (
   text: string,
   intensity: 'light' | 'medium' | 'dark' = 'medium',
-  persona: string = 'Savage Comedian'
+  persona: string = 'Savage Comedian',
+  language: SupportedLanguage = 'en'
 ): Promise<{ roast: string; finalBurn: string; ratings: Record<string, number> }> => {
   try {
     const intensityDescriptions = {
@@ -154,7 +158,8 @@ export const generateTextRoast = async (
                    Create a humorous, exaggerated roast with witty observations about the user's text.
                    Include a funny one-liner at the end as a "FINAL BURN". Also generate ratings on a scale of 5-30% 
                    for the following categories: Creativity, Confidence, Style, Mystery, and Self-Awareness.
-                   Format your response as JSON with 'roast', 'finalBurn', and 'ratings' fields.`
+                   Format your response as JSON with 'roast', 'finalBurn', and 'ratings' fields.
+                   IMPORTANT: Write the entire roast in ${language !== 'en' ? SUPPORTED_LANGUAGES[language] : 'English'}.`
         },
         {
           role: "user",

@@ -1,10 +1,10 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { Flame, RefreshCw } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import RatingMeter from './RatingMeter';
 import ShareOptions from './ShareOptions';
 import AudioRoastPlayer from './AudioRoastPlayer';
+import { SupportedLanguage } from './LanguageSelector';
 
 interface RoastResultProps {
   imageUrl?: string;
@@ -12,83 +12,77 @@ interface RoastResultProps {
   finalBurn: string;
   ratings: Record<string, number>;
   onRoastAgain: () => void;
+  language?: SupportedLanguage;
 }
 
-const RoastResult: React.FC<RoastResultProps> = ({ 
-  imageUrl, roast, finalBurn, ratings, onRoastAgain 
+const RoastResult: React.FC<RoastResultProps> = ({
+  imageUrl,
+  roast,
+  finalBurn,
+  ratings,
+  onRoastAgain,
+  language = 'en'
 }) => {
-  // Animated entry for text
-  React.useEffect(() => {
-    const animateText = () => {
-      const roastElement = document.getElementById('roast-text');
-      if (roastElement) {
-        roastElement.style.opacity = '1';
-      }
-    };
-    
-    setTimeout(animateText, 500);
-  }, [roast]);
+  const totalRating = Object.values(ratings).reduce((sum, rating) => sum + rating, 0);
+  const formatRating = (category: string) => {
+    return `${category}: ${ratings[category]}%`;
+  };
 
   return (
-    <div className="w-full max-w-full mx-auto animate-fade-in">
-      <div className="roast-card p-6 mb-6">
-        <div className="flex items-center justify-center mb-4">
-          <h2 className="text-xl font-bold">THE VERDICT</h2>
-        </div>
-        
+    <div className="space-y-8">
+      <Button
+        variant="ghost"
+        className="mb-4 pl-0 hover:bg-transparent"
+        onClick={onRoastAgain}
+      >
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        Roast Again
+      </Button>
+      
+      <div className="flex flex-col gap-6 md:flex-row">
         {imageUrl && (
-          <div className="relative mb-6 rounded-xl overflow-hidden border-2 border-[#FF5722] max-w-lg mx-auto">
+          <div className="md:w-1/3">
             <img 
               src={imageUrl} 
               alt="Roasted selfie" 
-              className="w-full object-cover"
+              className="w-full h-auto rounded-lg object-cover"
             />
-            <div className="absolute bottom-4 right-4 flex items-center px-3 py-1.5 bg-[#FF5722] rounded-full">
-              <Flame className="h-5 w-5 mr-1.5 fire-glow" />
-              <span className="font-bold">ROASTED</span>
-            </div>
           </div>
         )}
         
-        <div className="mb-6">
-          <div 
-            id="roast-text"
-            className="italic text-lg mb-4 opacity-0 transition-opacity duration-1000"
-            style={{ textShadow: '0 0 20px rgba(255,255,255,0.1)' }}
-          >
-            <span className="text-3xl text-[#FF7A50]">"</span>
-            {roast}
-            <span className="text-3xl text-[#FF7A50]">"</span>
+        <div className={`${imageUrl ? 'md:w-2/3' : 'w-full'}`}>
+          <div className="bg-secondary p-6 rounded-lg shadow-lg mb-6">
+            <h3 className="text-lg font-semibold mb-4">
+              {language.toUpperCase()} Roast
+            </h3>
+            <p className="text-white/80 mb-4">{roast}</p>
+            <p className="text-sm italic text-white/60">Final Burn: {finalBurn}</p>
           </div>
-        </div>
-        
-        <RatingMeter ratings={ratings} />
-        
-        <div className="mt-6 pt-4 border-t border-white/10">
-          <h3 className="text-xl font-bold mb-3 text-center">FINAL BURN</h3>
-          <div className="p-4 bg-gradient-to-r from-[#FF7A50] to-[#E64A19] rounded-xl text-center text-white font-medium">
-            {finalBurn}
+          
+          <AudioRoastPlayer 
+            roastText={roast} 
+            finalBurn={finalBurn}
+            language={language}
+          />
+          
+          <div className="bg-secondary p-6 rounded-lg shadow-lg mt-6">
+            <h3 className="text-lg font-semibold mb-4">Ratings</h3>
+            <div className="space-y-3">
+              {Object.keys(ratings).map((category) => (
+                <div key={category} className="flex items-center gap-4">
+                  <span className="w-32 text-sm">{formatRating(category)}</span>
+                  <RatingMeter value={ratings[category]} />
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 text-sm font-medium">
+              Total Score: {totalRating}%
+            </div>
           </div>
+          
+          <ShareOptions />
         </div>
       </div>
-      
-      <div className="space-y-6 mb-6">
-        <AudioRoastPlayer roastText={roast} finalBurn={finalBurn} />
-      </div>
-      
-      <ShareOptions imageUrl={imageUrl} roastText={`${roast}\n\nFINAL BURN: ${finalBurn}`} />
-      
-      <Button
-        onClick={onRoastAgain}
-        className="button-gradient flex items-center gap-2 px-6 py-6 rounded-full text-lg font-medium w-full max-w-lg mx-auto"
-      >
-        <RefreshCw size={20} className="mr-2" />
-        TRY ANOTHER ROAST
-      </Button>
-      
-      <p className="text-center text-white/60 text-xs mt-4">
-        All roasts are generated by AI and meant to be humorous.
-      </p>
     </div>
   );
 };

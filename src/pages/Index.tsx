@@ -13,6 +13,7 @@ import Header from '@/components/Header';
 import { dataURLToBase64 } from '@/utils/imageUtils';
 import { generateImageRoast, generateTextRoast } from '@/utils/apiService';
 import { incrementRoastCount, incrementEgoCrushedCount } from '@/utils/counterUtils';
+import { SupportedLanguage } from '@/components/LanguageSelector';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("selfie");
@@ -20,6 +21,7 @@ const Index = () => {
   const [textInput, setTextInput] = useState('');
   const [roastIntensity, setRoastIntensity] = useState<'light' | 'medium' | 'dark'>('medium');
   const [aiPersona, setAiPersona] = useState('Savage Comedian');
+  const [selectedLanguage, setSelectedLanguage] = useState<SupportedLanguage>('en');
   const [isGenerating, setIsGenerating] = useState(false);
   const [roastResult, setRoastResult] = useState<{
     roast: string;
@@ -49,7 +51,8 @@ const Index = () => {
       const result = await generateImageRoast(
         base64Data,
         roastIntensity,
-        aiPersona
+        aiPersona,
+        selectedLanguage
       );
       
       setRoastResult(result);
@@ -75,7 +78,8 @@ const Index = () => {
       const result = await generateTextRoast(
         textInput,
         roastIntensity,
-        aiPersona
+        aiPersona,
+        selectedLanguage
       );
       
       setRoastResult(result);
@@ -107,6 +111,7 @@ const Index = () => {
             finalBurn={roastResult.finalBurn}
             ratings={roastResult.ratings}
             onRoastAgain={handleRoastAgain}
+            language={selectedLanguage}
           />
         ) : (
           <>
@@ -141,6 +146,8 @@ const Index = () => {
                   setAiPersona={setAiPersona}
                   isGenerating={isGenerating}
                   handleRoastSelfie={handleRoastSelfie}
+                  selectedLanguage={selectedLanguage}
+                  setSelectedLanguage={setSelectedLanguage}
                 />
               </TabsContent>
               
@@ -154,6 +161,8 @@ const Index = () => {
                   setAiPersona={setAiPersona}
                   isGenerating={isGenerating}
                   handleRoastText={handleRoastText}
+                  selectedLanguage={selectedLanguage}
+                  setSelectedLanguage={setSelectedLanguage}
                 />
               </TabsContent>
               

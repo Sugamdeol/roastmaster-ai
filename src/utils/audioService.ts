@@ -69,7 +69,7 @@ export const streamRoastAudio = async (
   voice: RoastVoice = DEFAULT_VOICE,
   onTranscript: (text: string) => void,
   onAudio: (chunk: Int16Array) => void,
-  model: string = "mistral" // Using mistral model
+  model: string = "openai-audio" // Using mistral model
 ): Promise<void> => {
   try {
     // Use the original Pollinations API endpoint that was working

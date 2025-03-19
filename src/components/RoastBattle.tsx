@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
@@ -30,17 +29,14 @@ const RoastBattle: React.FC = () => {
   const [currentTranscript, setCurrentTranscript] = useState("");
   const battleEndRef = useRef<HTMLDivElement>(null);
   
-  // PCM streaming audio manager
   const audioManagerRef = useRef<PCM16AudioManager | null>(null);
 
-  // Scroll to the end of battle history when new items are added
   useEffect(() => {
     if (battleEndRef.current) {
       battleEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [battleHistory]);
   
-  // Cleanup function for audio player
   useEffect(() => {
     return () => {
       if (audioManagerRef.current) {
@@ -52,23 +48,19 @@ const RoastBattle: React.FC = () => {
   const handleSubmitPrompt = async () => {
     if (!userPrompt.trim() || !isUserTurn || isGenerating) return;
     
-    // Add user's roast to the battle history
     setBattleHistory(prev => [
       ...prev, 
       { text: userPrompt, isUser: true, timestamp: Date.now() }
     ]);
     
-    // Clear the input field
     const userMessage = userPrompt;
     setUserPrompt("");
     
-    // Mark as AI's turn
     setIsUserTurn(false);
     
     try {
       setIsGenerating(true);
       
-      // Initialize streaming audio manager if needed
       if (!audioManagerRef.current) {
         audioManagerRef.current = new PCM16AudioManager((playing) => {
           setIsPlaying(playing);
@@ -79,7 +71,6 @@ const RoastBattle: React.FC = () => {
       
       setCurrentTranscript("");
       
-      // Start streaming
       await streamRoastAudio(
         `You're in a roast battle. Respond to this with the most savage comeback: ${userMessage}`,
         selectedVoice,
@@ -90,19 +81,17 @@ const RoastBattle: React.FC = () => {
           if (audioManagerRef.current) {
             audioManagerRef.current.addChunk(audioChunk);
           }
-        }
+        },
+        "mistralai-large"
       );
       
-      // Start playback automatically
       if (audioManagerRef.current) {
         audioManagerRef.current.startPlayback();
         setIsPlaying(true);
       }
       
-      // Update counters
       incrementAudioRoastCount();
       
-      // Add AI's response to battle history once we have the transcript
       if (currentTranscript) {
         setBattleHistory(prev => [
           ...prev, 
@@ -110,7 +99,6 @@ const RoastBattle: React.FC = () => {
         ]);
       }
       
-      // Set back to user's turn
       setIsUserTurn(true);
       
     } catch (error) {
@@ -180,7 +168,6 @@ const RoastBattle: React.FC = () => {
           </div>
         </div>
         
-        {/* Battle History */}
         {battleHistory.length > 0 && (
           <div className="max-h-[400px] overflow-y-auto mb-4 space-y-4 p-2 bg-black/20 rounded-md">
             {battleHistory.map((entry, index) => (
@@ -211,7 +198,6 @@ const RoastBattle: React.FC = () => {
           </div>
         )}
         
-        {/* Audio Controls */}
         {isPlaying && (
           <div className="flex items-center justify-center gap-4 mb-4">
             <Button
@@ -235,7 +221,6 @@ const RoastBattle: React.FC = () => {
           </div>
         )}
         
-        {/* Input Area */}
         <div className="space-y-2">
           <div className="flex justify-between items-center">
             <h4 className="text-sm font-medium">

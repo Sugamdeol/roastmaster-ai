@@ -23,116 +23,64 @@ export type RoastVoice = keyof typeof ROAST_VOICES;
 // Default voice
 export const DEFAULT_VOICE: RoastVoice = 'nova';
 
-// Stream audio for a roast
+/**
+ * Stream audio response from the Pollinations API
+ */
 export const streamRoastAudio = async (
-  roastText: string,
+  prompt: string,
   voice: RoastVoice = DEFAULT_VOICE,
-  onTextUpdate: (text: string) => void,
-  onAudioChunk: (audioData: Uint8Array) => void
+  onTranscript: (text: string) => void,
+  onAudio: (chunk: Int16Array) => void,
+  model: string = "mistralai-large" // Default to Mistral
 ): Promise<void> => {
   try {
-    // Check if text is too long
-    if (roastText.length > 4000) {
-      roastText = roastText.substring(0, 4000);
-    }
-
+    const endpoint = 'https://audio.pollinations.ai/tts/live';
+    
     const requestBody = {
-      model: "openai-audio",
-      modalities: ["text", "audio"],
-      stream: true,
-      audio: { voice, format: "pcm16" },
-      messages: [
-        {
-          role: "system",
-          content: "You are a brutal roast master. Read the following roast with attitude and perfect delivery."
-        },
-        { role: "user", content: roastText }
-      ]
+      message: {
+        content: prompt
+      },
+      voice: voice,
+      code: "beesknees",
+      model: model
     };
-
-    const response = await fetch(STREAMING_API_URL, {
-      method: "POST",
+    
+    const response = await fetch(endpoint, {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(requestBody)
     });
-
+    
     if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
+      throw new Error(`Failed to stream audio: ${response.statusText}`);
     }
-
-    const reader = response.body!.getReader();
-    const decoder = new TextDecoder("utf-8");
-    let buffer = "";
-    let accumulatedText = "";
-
-    function pump() {
-      return reader.read().then(({ done, value }) => {
-        if (done) return;
-        
-        buffer += decoder.decode(value, { stream: true });
-        let lines = buffer.split("\n");
-        
-        if (!buffer.endsWith("\n")) {
-          buffer = lines.pop() || "";
-        } else {
-          buffer = "";
-        }
-        
-        for (const line of lines) {
-          if (line.startsWith("data: ")) {
-            let jsonStr = line.slice(6).trim();
-            if (jsonStr === "[DONE]") continue;
-            
-            try {
-              const jsonObj = JSON.parse(jsonStr);
-              if (jsonObj.choices && jsonObj.choices[0] && jsonObj.choices[0].delta) {
-                const delta = jsonObj.choices[0].delta;
-                
-                // Get text transcript if available
-                let textChunk = "";
-                if (delta.audio && delta.audio.transcript) {
-                  textChunk = delta.audio.transcript;
-                } else if (delta.content) {
-                  textChunk = delta.content;
-                }
-                
-                if (textChunk) {
-                  accumulatedText += textChunk;
-                  onTextUpdate(accumulatedText);
-                }
-                
-                // Process audio data if available
-                if (delta.audio && delta.audio.data) {
-                  const base64Data = delta.audio.data;
-                  const binaryStr = atob(base64Data);
-                  const len = binaryStr.length;
-                  const bytes = new Uint8Array(len);
-                  
-                  for (let i = 0; i < len; i++) {
-                    bytes[i] = binaryStr.charCodeAt(i);
-                  }
-                  
-                  onAudioChunk(bytes);
-                }
-              }
-            } catch (e) {
-              console.error("JSON parse error:", e);
-            }
-          }
-        }
-        
-        return pump();
-      }).catch(error => {
-        console.error("Error reading stream:", error);
-        throw error;
-      });
+    
+    const reader = response.body?.getReader();
+    if (!reader) throw new Error('Unable to read response stream');
+    
+    let transcript = '';
+    
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      
+      // Process the chunk
+      const chunk = new Uint8Array(value);
+      const { text, audio } = parseStreamChunk(chunk);
+      
+      if (text) {
+        transcript += text;
+        onTranscript(transcript);
+      }
+      
+      if (audio) {
+        onAudio(audio);
+      }
     }
-
-    return pump();
   } catch (error) {
-    console.error('Error streaming audio roast:', error);
+    console.error('Error streaming audio:', error);
     toast.error('Failed to stream audio roast');
     throw error;
   }

@@ -2,7 +2,7 @@
  * API Service for Pollinations AI API
  */
 
-import { SupportedLanguage } from '@/components/LanguageSelector';
+import { SupportedLanguage, SUPPORTED_LANGUAGES } from '@/components/LanguageSelector';
 
 /**
  * Generates a roast based on an image

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -80,7 +81,7 @@ const RoastResult: React.FC<RoastResultProps> = ({
             </div>
           </div>
           
-          <ShareOptions />
+          <ShareOptions roastText={roast} imageUrl={imageUrl} />
         </div>
       </div>
     </div>

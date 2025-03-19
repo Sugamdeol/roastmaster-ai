@@ -22,7 +22,22 @@ export const SUPPORTED_LANGUAGES = {
   'uk': 'Ukrainian',
   'vi': 'Vietnamese',
   'th': 'Thai',
-  'id': 'Indonesian'
+  'id': 'Indonesian',
+  'fi': 'Finnish',
+  'he': 'Hebrew',
+  'cs': 'Czech',
+  'da': 'Danish',
+  'el': 'Greek',
+  'hu': 'Hungarian',
+  'no': 'Norwegian',
+  'ro': 'Romanian',
+  'sk': 'Slovak',
+  'bg': 'Bulgarian',
+  'hr': 'Croatian',
+  'lt': 'Lithuanian',
+  'sl': 'Slovenian',
+  'et': 'Estonian',
+  'lv': 'Latvian'
 };
 
 export type SupportedLanguage = keyof typeof SUPPORTED_LANGUAGES;

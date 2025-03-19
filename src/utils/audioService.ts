@@ -9,9 +9,6 @@ import { PCM16AudioManager } from './audioStreaming';
 // Re-export PCM16AudioManager
 export { PCM16AudioManager };
 
-// Pollinations Streaming API endpoint
-const STREAMING_API_URL = 'https://text.pollinations.ai/openai/v1/chat/completions';
-
 // Available voices for roasting
 export const ROAST_VOICES = {
   'alloy': 'Alloy (Neutral)',
@@ -75,14 +72,13 @@ export const streamRoastAudio = async (
   model: string = "mistral" // Using mistral model
 ): Promise<void> => {
   try {
-    const endpoint = 'https://audio.pollinations.ai/openai';
+    // Use the original Pollinations API endpoint that was working
+    const endpoint = 'https://text.pollinations.ai/audio/tts';
     
     const requestBody = {
-      message: {
-        content: prompt
-      },
+      input: prompt,
       voice: voice,
-      code: "beesknees",
+      stream: true,
       model: model
     };
     

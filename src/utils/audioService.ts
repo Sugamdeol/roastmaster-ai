@@ -73,7 +73,7 @@ export const streamRoastAudio = async (
 ): Promise<void> => {
   try {
     // Use the original Pollinations API endpoint that was working
-    const endpoint = 'https://text.pollinations.ai/audio/tts';
+    const endpoint = 'https://text.pollinations.ai/';
     
     const requestBody = {
       input: prompt,

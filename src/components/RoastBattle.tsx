@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
@@ -82,7 +83,7 @@ const RoastBattle: React.FC = () => {
             audioManagerRef.current.addChunk(audioChunk);
           }
         },
-        "mistralai-large"
+        "mistral" // Updated model name
       );
       
       if (audioManagerRef.current) {

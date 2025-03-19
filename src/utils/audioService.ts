@@ -1,3 +1,4 @@
+
 /**
  * Service for generating audio roasts using OpenAI's TTS API through Pollinations
  */
@@ -24,6 +25,42 @@ export type RoastVoice = keyof typeof ROAST_VOICES;
 export const DEFAULT_VOICE: RoastVoice = 'nova';
 
 /**
+ * Parse a stream chunk to extract text and audio data
+ */
+export const parseStreamChunk = (chunk: Uint8Array): { text?: string; audio?: Int16Array } => {
+  try {
+    // Convert to string and parse as JSON
+    const jsonString = new TextDecoder().decode(chunk);
+    
+    // Skip empty chunks
+    if (!jsonString.trim()) {
+      return {};
+    }
+    
+    try {
+      const data = JSON.parse(jsonString);
+      
+      // Extract text and audio if available
+      return {
+        text: data.text || undefined,
+        audio: data.audio ? new Int16Array(data.audio) : undefined
+      };
+    } catch (e) {
+      // If it's not valid JSON, check if it contains audio data in binary format
+      if (chunk.byteLength > 4) {
+        // Assume it's raw audio data
+        const audioArray = new Int16Array(chunk.buffer, chunk.byteOffset, Math.floor(chunk.byteLength / 2));
+        return { audio: audioArray };
+      }
+      return {};
+    }
+  } catch (error) {
+    console.error('Error parsing stream chunk:', error);
+    return {};
+  }
+};
+
+/**
  * Stream audio response from the Pollinations API
  */
 export const streamRoastAudio = async (
@@ -31,7 +68,7 @@ export const streamRoastAudio = async (
   voice: RoastVoice = DEFAULT_VOICE,
   onTranscript: (text: string) => void,
   onAudio: (chunk: Int16Array) => void,
-  model: string = "mistralai-large" // Default to Mistral
+  model: string = "mistral" // Updated to use mistral instead of mistralai-large
 ): Promise<void> => {
   try {
     const endpoint = 'https://audio.pollinations.ai/tts/live';
@@ -112,8 +149,11 @@ export class PCM16AudioManager {
     }
   }
 
-  public addChunk(pcmData: Uint8Array): void {
-    this.audioChunks.push(pcmData);
+  public addChunk(pcmData: Int16Array): void {
+    // Convert Int16Array to Uint8Array for storage
+    const uint8Data = new Uint8Array(pcmData.buffer, pcmData.byteOffset, pcmData.byteLength);
+    this.audioChunks.push(uint8Data);
+    
     if (this.isPlaying && !this.isPaused) {
       this.playChunk(pcmData);
     }
@@ -127,7 +167,9 @@ export class PCM16AudioManager {
       
       // Play all accumulated chunks
       for (const chunk of this.audioChunks) {
-        this.playChunk(chunk);
+        // Convert stored Uint8Array back to Int16Array for playback
+        const int16Data = new Int16Array(chunk.buffer, chunk.byteOffset, chunk.byteLength / 2);
+        this.playChunk(int16Data);
       }
       
       if (this.onPlayingChange) {
@@ -167,16 +209,14 @@ export class PCM16AudioManager {
     }
   }
 
-  private playChunk(pcmData: Uint8Array): void {
+  private playChunk(pcmData: Int16Array): void {
     if (this.isPaused) return;
     
-    const numSamples = pcmData.byteLength / 2;
+    const numSamples = pcmData.length;
     const floatData = new Float32Array(numSamples);
-    const dataView = new DataView(pcmData.buffer, pcmData.byteOffset, pcmData.byteLength);
     
     for (let i = 0; i < numSamples; i++) {
-      const sample = dataView.getInt16(i * 2, true);
-      floatData[i] = sample / 32768; // Normalize to [-1, 1]
+      floatData[i] = pcmData[i] / 32768; // Normalize to [-1, 1]
     }
     
     const audioBuffer = this.audioContext.createBuffer(1, numSamples, this.sampleRate);

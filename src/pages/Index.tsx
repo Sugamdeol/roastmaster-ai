@@ -167,7 +167,7 @@ const Index = () => {
               </TabsContent>
               
               <TabsContent value="battle" className="mt-0">
-                <RoastBattle />
+                <RoastBattle language={selectedLanguage} />
               </TabsContent>
             </Tabs>
             

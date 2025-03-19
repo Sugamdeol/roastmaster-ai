@@ -14,8 +14,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { toast } from 'sonner';
 import { incrementAudioRoastCount } from '@/utils/counterUtils';
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { SupportedLanguage, SUPPORTED_LANGUAGES } from './LanguageSelector';
 
-const RoastBattle: React.FC = () => {
+interface RoastBattleProps {
+  language?: SupportedLanguage;
+}
+
+const RoastBattle: React.FC<RoastBattleProps> = ({ language = 'en' }) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -72,8 +77,11 @@ const RoastBattle: React.FC = () => {
       
       setCurrentTranscript("");
       
+      const languageName = SUPPORTED_LANGUAGES[language];
+      const promptInLanguage = `You're in a roast battle. Respond to this with the most savage comeback in ${languageName}: ${userMessage}`;
+      
       await streamRoastAudio(
-        `You're in a roast battle. Respond to this with the most savage comeback: ${userMessage}`,
+        promptInLanguage,
         selectedVoice,
         (text) => {
           setCurrentTranscript(text);
@@ -83,7 +91,7 @@ const RoastBattle: React.FC = () => {
             audioManagerRef.current.addChunk(audioChunk);
           }
         },
-        "mistral" // Updated model name
+        "mistral" // Using mistral model
       );
       
       if (audioManagerRef.current) {
@@ -140,7 +148,7 @@ const RoastBattle: React.FC = () => {
     <div className="space-y-4">
       <div className="roast-card p-4">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-medium">AI Roast Battle</h3>
+          <h3 className="text-lg font-medium">AI Roast Battle ({language.toUpperCase()})</h3>
           
           <div className="flex items-center gap-3">
             <Select 

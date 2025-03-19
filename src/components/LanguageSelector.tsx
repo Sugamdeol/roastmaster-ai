@@ -12,7 +12,17 @@ export const SUPPORTED_LANGUAGES = {
   'ru': 'Russian',
   'ja': 'Japanese',
   'zh': 'Chinese',
-  'ar': 'Arabic'
+  'ar': 'Arabic',
+  'hi': 'Hindi',
+  'ko': 'Korean',
+  'nl': 'Dutch',
+  'pl': 'Polish',
+  'sv': 'Swedish',
+  'tr': 'Turkish',
+  'uk': 'Ukrainian',
+  'vi': 'Vietnamese',
+  'th': 'Thai',
+  'id': 'Indonesian'
 };
 
 export type SupportedLanguage = keyof typeof SUPPORTED_LANGUAGES;
@@ -37,7 +47,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({ value, onChange }) 
         <SelectTrigger className="w-full bg-secondary border-white/10">
           <SelectValue placeholder="Select a language" />
         </SelectTrigger>
-        <SelectContent className="bg-secondary border-white/10">
+        <SelectContent className="bg-secondary border-white/10 max-h-[300px]">
           {Object.entries(SUPPORTED_LANGUAGES).map(([code, name]) => (
             <SelectItem
               key={code}

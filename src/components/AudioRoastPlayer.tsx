@@ -89,7 +89,7 @@ const AudioRoastPlayer: React.FC<AudioRoastPlayerProps> = ({
           audioManagerRef.current.addChunk(audioChunk);
         }
       },
-      "mistral" // Updated model name
+      "mistral" // Using mistral model
     );
     
     // Start playback automatically

@@ -1,3 +1,4 @@
+
 /**
  * API Service for Pollinations AI API
  */
@@ -33,7 +34,7 @@ export const generateImageRoast = async (
           ]
         }
       ],
-      model: "mistral", // Updated model name
+      model: "mistral", // Using mistral model
       code: "beesknees",
       jsonMode: false
     };
@@ -58,6 +59,8 @@ export const generateImageRoast = async (
       dark: "Be absolutely savage but hilarious. Don't hold back, but still make it humorous rather than mean."
     };
 
+    const languageName = SUPPORTED_LANGUAGES[language];
+
     const roastRequestBody = {
       messages: [
         {
@@ -67,14 +70,14 @@ export const generateImageRoast = async (
                    Include a funny one-liner at the end as a "FINAL BURN". Also generate ratings on a scale of 5-30% 
                    for the following categories: Creativity, Confidence, Style, Mystery, and Self-Awareness.
                    Format your response as JSON with 'roast', 'finalBurn', and 'ratings' fields.
-                   IMPORTANT: Write the entire roast in ${language !== 'en' ? SUPPORTED_LANGUAGES[language] : 'English'}.`
+                   IMPORTANT: Write the entire roast in ${language !== 'en' ? languageName : 'English'}.`
         },
         {
           role: "user",
           content: `Based on this selfie analysis, create a hilarious roast: ${analysisResult}`
         }
       ],
-      model: "mistral", // Updated model name
+      model: "mistral", // Using mistral model
       code: "beesknees",
       jsonMode: true
     };
@@ -150,6 +153,8 @@ export const generateTextRoast = async (
       dark: "Be absolutely savage but hilarious. Don't hold back, but still make it humorous rather than mean."
     };
 
+    const languageName = SUPPORTED_LANGUAGES[language];
+
     const requestBody = {
       messages: [
         {
@@ -159,14 +164,14 @@ export const generateTextRoast = async (
                    Include a funny one-liner at the end as a "FINAL BURN". Also generate ratings on a scale of 5-30% 
                    for the following categories: Creativity, Confidence, Style, Mystery, and Self-Awareness.
                    Format your response as JSON with 'roast', 'finalBurn', and 'ratings' fields.
-                   IMPORTANT: Write the entire roast in ${language !== 'en' ? SUPPORTED_LANGUAGES[language] : 'English'}.`
+                   IMPORTANT: Write the entire roast in ${language !== 'en' ? languageName : 'English'}.`
         },
         {
           role: "user",
           content: `Roast me based on this text: ${text}`
         }
       ],
-      model: "mistral", // Updated model name
+      model: "mistral", // Using mistral model
       code: "beesknees",
       jsonMode: true
     };

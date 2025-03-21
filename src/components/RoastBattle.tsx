@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
@@ -91,7 +90,7 @@ const RoastBattle: React.FC<RoastBattleProps> = ({ language = 'en' }) => {
             audioManagerRef.current.addChunk(audioChunk);
           }
         },
-        "mistral" // Using mistral model
+        "openai-audio"
       );
       
       if (audioManagerRef.current) {

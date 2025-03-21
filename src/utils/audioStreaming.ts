@@ -8,7 +8,7 @@ export class PCM16AudioManager {
   private sampleRate: number = 24000;
   private isPlaying: boolean = false;
   private isPaused: boolean = false;
-  private audioChunks: Uint8Array[] = [];
+  private audioChunks: Int16Array[] = [];
   private onPlayingChange?: (isPlaying: boolean) => void;
 
   constructor(onPlayingChange?: (isPlaying: boolean) => void) {
@@ -28,9 +28,10 @@ export class PCM16AudioManager {
   }
 
   public addChunk(pcmData: Int16Array): void {
-    // Convert Int16Array to Uint8Array for storage
-    const uint8Data = new Uint8Array(pcmData.buffer, pcmData.byteOffset, pcmData.byteLength);
-    this.audioChunks.push(uint8Data);
+    if (!pcmData || pcmData.length === 0) return;
+    
+    // Store the original Int16Array directly
+    this.audioChunks.push(pcmData);
     
     if (this.isPlaying && !this.isPaused) {
       this.playChunk(pcmData);
@@ -45,9 +46,7 @@ export class PCM16AudioManager {
       
       // Play all accumulated chunks
       for (const chunk of this.audioChunks) {
-        // Convert stored Uint8Array back to Int16Array for playback
-        const int16Data = new Int16Array(chunk.buffer, chunk.byteOffset, chunk.byteLength / 2);
-        this.playChunk(int16Data);
+        this.playChunk(chunk);
       }
       
       if (this.onPlayingChange) {
@@ -88,26 +87,28 @@ export class PCM16AudioManager {
   }
 
   private playChunk(pcmData: Int16Array): void {
-    if (this.isPaused) return;
+    if (this.isPaused || !pcmData || pcmData.length === 0) return;
     
     const numSamples = pcmData.length;
     const floatData = new Float32Array(numSamples);
     
     for (let i = 0; i < numSamples; i++) {
-      floatData[i] = pcmData[i] / 32768; // Normalize to [-1, 1]
+      // Proper normalization of PCM16 data to Float32 range [-1, 1]
+      floatData[i] = pcmData[i] / 32768.0;
     }
     
     const audioBuffer = this.audioContext.createBuffer(1, numSamples, this.sampleRate);
     audioBuffer.copyToChannel(floatData, 0);
+    
+    const source = this.audioContext.createBufferSource();
+    source.buffer = audioBuffer;
+    source.connect(this.audioContext.destination);
     
     const now = this.audioContext.currentTime;
     if (this.playbackTimeOffset < now) {
       this.playbackTimeOffset = now;
     }
     
-    const source = this.audioContext.createBufferSource();
-    source.buffer = audioBuffer;
-    source.connect(this.audioContext.destination);
     source.start(this.playbackTimeOffset);
     this.playbackTimeOffset += audioBuffer.duration;
   }

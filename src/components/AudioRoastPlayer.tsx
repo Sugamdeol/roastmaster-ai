@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "./ui/button";
 import { Volume2, Pause, Play, VolumeX, Loader2 } from "lucide-react";
@@ -31,10 +30,8 @@ const AudioRoastPlayer: React.FC<AudioRoastPlayerProps> = ({
   const [selectedVoice, setSelectedVoice] = useState<RoastVoice>(DEFAULT_VOICE);
   const [currentTranscript, setCurrentTranscript] = useState<string>("");
   
-  // PCM streaming audio manager
   const audioManagerRef = useRef<PCM16AudioManager | null>(null);
   
-  // Cleanup function for audio player
   useEffect(() => {
     return () => {
       if (audioManagerRef.current) {
@@ -49,11 +46,9 @@ const AudioRoastPlayer: React.FC<AudioRoastPlayerProps> = ({
     try {
       setIsGenerating(true);
       
-      // Standard mode - combines roast text and final burn for the audio
       const fullRoastText = `${roastText} And for the final burn: ${finalBurn}`;
       await generateAudio(fullRoastText);
       
-      // Update counters
       incrementAudioRoastCount();
       
       toast.success('Audio roast generated successfully!');
@@ -66,7 +61,6 @@ const AudioRoastPlayer: React.FC<AudioRoastPlayerProps> = ({
   };
 
   const generateAudio = async (text: string) => {
-    // Initialize streaming audio manager if needed
     if (!audioManagerRef.current) {
       audioManagerRef.current = new PCM16AudioManager((playing) => {
         setIsPlaying(playing);
@@ -77,7 +71,6 @@ const AudioRoastPlayer: React.FC<AudioRoastPlayerProps> = ({
     
     setCurrentTranscript("");
     
-    // Start streaming
     await streamRoastAudio(
       text,
       selectedVoice,
@@ -89,10 +82,9 @@ const AudioRoastPlayer: React.FC<AudioRoastPlayerProps> = ({
           audioManagerRef.current.addChunk(audioChunk);
         }
       },
-      "mistral" // Using mistral model
+      "openai-audio"
     );
     
-    // Start playback automatically
     if (audioManagerRef.current) {
       audioManagerRef.current.startPlayback();
       setIsPlaying(true);

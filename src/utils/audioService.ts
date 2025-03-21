@@ -49,9 +49,8 @@ export const parseStreamChunk = (chunk: Uint8Array): { text?: string; audio?: In
     } catch (e) {
       // If it's not valid JSON, check if it contains audio data in binary format
       if (chunk.byteLength > 4) {
-        // Assume it's raw audio data
-        const audioArray = new Int16Array(chunk.buffer, chunk.byteOffset, Math.floor(chunk.byteLength / 2));
-        return { audio: audioArray };
+        // Properly handle binary data
+        return { audio: new Int16Array(chunk.buffer, 0, Math.floor(chunk.byteLength / 2)) };
       }
       return {};
     }
@@ -69,10 +68,10 @@ export const streamRoastAudio = async (
   voice: RoastVoice = DEFAULT_VOICE,
   onTranscript: (text: string) => void,
   onAudio: (chunk: Int16Array) => void,
-  model: string = "openai-audio" // Using mistral model
+  model: string = "openai-audio" // Using openai-audio model for compatibility
 ): Promise<void> => {
   try {
-    // Use the original Pollinations API endpoint that was working
+    // Use the proven Pollinations API endpoint
     const endpoint = 'https://text.pollinations.ai/openai';
     
     const requestBody = {
@@ -94,25 +93,28 @@ export const streamRoastAudio = async (
       throw new Error(`Failed to stream audio: ${response.statusText}`);
     }
     
-    const reader = response.body?.getReader();
-    if (!reader) throw new Error('Unable to read response stream');
+    if (!response.body) {
+      throw new Error('Response body is null');
+    }
     
+    const reader = response.body.getReader();
     let transcript = '';
     
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
       
+      if (!value || value.length === 0) continue;
+      
       // Process the chunk
-      const chunk = new Uint8Array(value);
-      const { text, audio } = parseStreamChunk(chunk);
+      const { text, audio } = parseStreamChunk(value);
       
       if (text) {
         transcript += text;
         onTranscript(transcript);
       }
       
-      if (audio) {
+      if (audio && audio.length > 0) {
         onAudio(audio);
       }
     }

@@ -89,8 +89,7 @@ const RoastBattle: React.FC<RoastBattleProps> = ({ language = 'en' }) => {
           if (audioManagerRef.current) {
             audioManagerRef.current.addChunk(audioChunk);
           }
-        },
-        "openai-audio"
+        }
       );
       
       if (audioManagerRef.current) {

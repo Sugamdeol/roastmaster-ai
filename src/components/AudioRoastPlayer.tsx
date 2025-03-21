@@ -81,8 +81,7 @@ const AudioRoastPlayer: React.FC<AudioRoastPlayerProps> = ({
         if (audioManagerRef.current) {
           audioManagerRef.current.addChunk(audioChunk);
         }
-      },
-      "openai-audio"
+      }
     );
     
     if (audioManagerRef.current) {

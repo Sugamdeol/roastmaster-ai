@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
@@ -40,7 +41,7 @@ const RoastBattle: React.FC<RoastBattleProps> = ({ language = 'en' }) => {
     if (battleEndRef.current) {
       battleEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [battleHistory]);
+  }, [battleHistory, currentTranscript]);
   
   useEffect(() => {
     return () => {
@@ -99,11 +100,13 @@ const RoastBattle: React.FC<RoastBattleProps> = ({ language = 'en' }) => {
       
       incrementAudioRoastCount();
       
+      // Only add to battle history when generation is complete
       if (currentTranscript) {
         setBattleHistory(prev => [
           ...prev, 
           { text: currentTranscript, isUser: false, timestamp: Date.now() }
         ]);
+        setCurrentTranscript(""); // Clear current transcript after adding to history
       }
       
       setIsUserTurn(true);
@@ -189,7 +192,7 @@ const RoastBattle: React.FC<RoastBattleProps> = ({ language = 'en' }) => {
                 </div>
               </div>
             ))}
-            {!isUserTurn && currentTranscript && (
+            {!isUserTurn && isGenerating && currentTranscript && (
               <div className="flex justify-start">
                 <div className="flex gap-2 max-w-[80%]">
                   <Avatar className="h-8 w-8 bg-[#FF5722]">

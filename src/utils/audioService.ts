@@ -66,8 +66,7 @@ export const streamRoastAudio = async (
   prompt: string,
   voice: RoastVoice = DEFAULT_VOICE,
   onTranscript: (text: string) => void,
-  onAudio: (chunk: Uint8Array) => void,
-  model: string = "openai-audio"
+  onAudio: (chunk: Uint8Array) => void
 ): Promise<void> => {
   try {
     // Check if text is too long

@@ -68,16 +68,15 @@ export const streamRoastAudio = async (
   voice: RoastVoice = DEFAULT_VOICE,
   onTranscript: (text: string) => void,
   onAudio: (chunk: Int16Array) => void,
-  model: string = "openai-audio" // Changed from "openai-audio" to "tts-1"
+  model: string = "tts-1" // Updated model parameter
 ): Promise<void> => {
   try {
-    // Use the proven Pollinations API endpoint
-    const endpoint = 'https://text.pollinations.ai/openai';
+    // Use the specific audio TTS endpoint
+    const endpoint = 'https://text.pollinations.ai/audio/tts';
     
     const requestBody = {
-      text: prompt,
+      input: prompt,
       voice: voice,
-      stream: true,
       model: model,
       response_format: "pcm"
     };

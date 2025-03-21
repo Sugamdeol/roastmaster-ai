@@ -68,18 +68,21 @@ export const streamRoastAudio = async (
   voice: RoastVoice = DEFAULT_VOICE,
   onTranscript: (text: string) => void,
   onAudio: (chunk: Int16Array) => void,
-  model: string = "openai-audio" // Using openai-audio model for compatibility
+  model: string = "tts-1" // Changed from "openai-audio" to "tts-1"
 ): Promise<void> => {
   try {
     // Use the proven Pollinations API endpoint
-    const endpoint = 'https://text.pollinations.ai/openai';
+    const endpoint = 'https://text.pollinations.ai/audio/tts';
     
     const requestBody = {
-      input: prompt,
+      text: prompt,
       voice: voice,
       stream: true,
-      model: model
+      model: model,
+      response_format: "pcm"
     };
+    
+    console.log("Sending TTS request with:", JSON.stringify(requestBody));
     
     const response = await fetch(endpoint, {
       method: 'POST',
@@ -90,7 +93,9 @@ export const streamRoastAudio = async (
     });
     
     if (!response.ok) {
-      throw new Error(`Failed to stream audio: ${response.statusText}`);
+      const errorText = await response.text();
+      console.error("TTS API error:", errorText);
+      throw new Error(`Failed to stream audio: ${response.statusText || errorText}`);
     }
     
     if (!response.body) {
@@ -98,7 +103,8 @@ export const streamRoastAudio = async (
     }
     
     const reader = response.body.getReader();
-    let transcript = '';
+    let transcript = prompt; // Use the input prompt as the transcript
+    onTranscript(transcript); // Immediately show the transcript
     
     while (true) {
       const { done, value } = await reader.read();
@@ -106,16 +112,12 @@ export const streamRoastAudio = async (
       
       if (!value || value.length === 0) continue;
       
-      // Process the chunk
-      const { text, audio } = parseStreamChunk(value);
-      
-      if (text) {
-        transcript += text;
-        onTranscript(transcript);
-      }
-      
-      if (audio && audio.length > 0) {
-        onAudio(audio);
+      // For PCM data, we can directly pass it to the audio player
+      if (value.length > 0) {
+        const audioData = new Int16Array(value.buffer, 0, Math.floor(value.length / 2));
+        if (audioData.length > 0) {
+          onAudio(audioData);
+        }
       }
     }
   } catch (error) {
